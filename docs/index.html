@@ -119,7 +119,8 @@ function drawChart(){
       const min = Math.floor(elapsed / 60);
       maxTime = Math.max(maxTime, min);
       maxScore = Math.max(maxScore, Number(score));
-      timePoint[min] = true;
+      const hour = Math.ceil(min/24);
+      timePoint[hour] = true;
     });
     rank.push( [maxScore, userName] );
   });
@@ -152,7 +153,8 @@ function drawChart(){
       let elapsed = Number(obj[score]) / 1000000000;
       const sec = elapsed % 60;
       const min = Math.floor(elapsed / 60);
-      let row = timePointKey[min];
+      const hour = Math.ceil(min/24);
+      let row = timePointKey[hour];
       scoreTable[row][idx+1] = Number(score)/100;
     } );
     for(let i=1; i<scoreTable.length; i++){
@@ -192,7 +194,7 @@ function drawChart(){
 
 function drawScoreChartGoogle(currentRank, scoreTable){
   let chartRankTable = new google.visualization.DataTable();
-  chartRankTable.addColumn('number', 'Time [min]');
+  chartRankTable.addColumn('number', 'Time [hour]');
   for(let i=0; i<currentRank.length; i++){
     chartRankTable.addColumn('number', currentRank[i][1]);
   }
@@ -224,7 +226,7 @@ function drawScoreChartGoogle(currentRank, scoreTable){
 
 function drawRankChartGoogle(currentRank, rankTable){
   let chartRankTable = new google.visualization.DataTable();
-  chartRankTable.addColumn('number', 'Time [min]');
+  chartRankTable.addColumn('number', 'Time [hour]');
   for(let i=0; i<currentRank.length; i++){
     chartRankTable.addColumn('number', currentRank[i][1]);
   }
@@ -272,7 +274,7 @@ function drawRankChartPlotly(currentRank, rankTable){
 
   let layout = {
     xaxis: {
-      title : 'Elapsed Time [min]',
+      title : 'Elapsed Time [hour]',
     },
     yaxis: {
       title : 'Rank',
@@ -290,6 +292,7 @@ function drawRankChartPlotly(currentRank, rankTable){
 function drawScoreChartPlotly(currentRank, scoreTable){
   let traces = [];
   let x = scoreTable.map( e=>e[0] );
+  const maxScore = scoreTable[scoreTable.length-1][1];
   for(let i=1; i<scoreTable[0].length; i++){
     traces.push({
       x: x,
@@ -304,7 +307,7 @@ function drawScoreChartPlotly(currentRank, scoreTable){
 
   let layout = {
     xaxis: {
-      title : 'Elapsed Time [min]',
+      title : 'Elapsed Time [hour]',
     },
     yaxis: {
       title : 'Score',
